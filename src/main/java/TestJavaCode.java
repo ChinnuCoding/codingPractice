@@ -3,13 +3,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestMap {
+public class TestJavaCode {
 
     public static void main(String[] args) {
-        Map<Character, List<Character>> listMap = new HashMap<>();
 
-        listMap.putIfAbsent('A', new ArrayList<>());
+        String str = "Raju";
 
+        System.out.println("Substring : "  + str.substring(0,1));
 
     }
 

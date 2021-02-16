@@ -7,7 +7,7 @@ package arrays;
 * */
 
 
-class ContinuousSubArray {
+class ContinuousSubArraySum {
     /* Returns true if the there is  
 a subarray of arr[] with sum equal to 
        'sum' otherwise returns false.   
@@ -46,10 +46,10 @@ Also, prints the result */
 
     public static void main(String[] args)
     {
-        ContinuousSubArray continuousSubArray = new ContinuousSubArray();
+        ContinuousSubArraySum continuousSubArraySum = new ContinuousSubArraySum();
         int arr[] = { 15, 2, 4, 8, 9, 5, 10, 23 };
         int n = arr.length;
         int sum = 23;
-        continuousSubArray.subArraySum(arr, n, sum);
+        continuousSubArraySum.subArraySum(arr, n, sum);
     }
 } 

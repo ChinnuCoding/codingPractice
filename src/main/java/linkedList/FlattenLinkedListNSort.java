@@ -1,113 +1,138 @@
 package linkedList;
 
-// A linked list FlattenNode
-class FlattenNode {
-    int data;
-    FlattenNode next;
-    FlattenNode down;
-};
-
+// Java program for flattening a Linked List
 class FlattenLinkedListNSort
 {
-    // Helper function to insert new FlattenNode in the beginning of the
-    // vertical linked list
-    public static FlattenNode push(FlattenNode head,  int data)
+    Node head;  // head of list
+
+    /* Linked list Node*/
+    class Node
     {
-        FlattenNode newNode = new FlattenNode();
-
-        newNode.data = data;
-        newNode.next = null;
-        newNode.down = head;
-
-        return newNode;
+        int data;
+        Node right, down;
+        Node(int data)
+        {
+            this.data = data;
+            right = null;
+            down = null;
+        }
     }
 
-    // Takes two lists sorted in increasing order, and merge their nodes
-    // together to make one big sorted list which is returned
-    public static FlattenNode SortedMerge(FlattenNode a, FlattenNode b)
+    // An utility function to merge two sorted linked lists
+    Node merge(Node a, Node b)
     {
-        // Base cases
-        if (a == null) {
-            return b;
-        }
-        else if (b == null) {
-            return a;
-        }
+        // if first linked list is empty then second
+        // is the answer
+        if (a == null)     return b;
 
-        FlattenNode result;
+        // if second linked list is empty then first
+        // is the result
+        if (b == null)      return a;
 
-        // Pick either a or b, and recur
-        if (a.data <= b.data)
+        // compare the data members of the two linked lists
+        // and put the larger one in the result
+        Node result;
+
+        if (a.data < b.data)
         {
             result = a;
-            result.down = SortedMerge(a.down, b);
+            result.down =  merge(a.down, b);
         }
+
         else
         {
             result = b;
-            result.down = SortedMerge(a, b.down);
+            result.down = merge(a, b.down);
         }
 
+        result.right = null;
         return result;
     }
 
-    // Helper function to print given linked list
-    public static void printList(FlattenNode head)
+    Node flatten(Node root)
     {
-        FlattenNode ptr = head;
-        while (ptr != null)
+        // Base Cases
+        if (root == null || root.right == null)
+            return root;
+
+        // recur for list on right
+        root.right = flatten(root.right);
+
+        // now merge
+        root = merge(root, root.right);
+
+        // return the root
+        // it will be in turn merged with its left
+        return root;
+    }
+
+    /* Utility function to insert a node at beginning of the
+       linked list */
+    Node push(Node head_ref, int data)
+    {
+        /* 1 & 2: Allocate the Node &
+                  Put in the data*/
+        Node new_node = new Node(data);
+
+        /* 3. Make next of new Node as head */
+        new_node.down = head_ref;
+
+        /* 4. Move the head to point to new Node */
+        head_ref = new_node;
+
+        /*5. return to link it back */
+        return head_ref;
+    }
+
+    void printList()
+    {
+        Node temp = head;
+        while (temp != null)
         {
-            System.out.print(ptr.data + " -> ");
-            ptr = ptr.down;
+            System.out.print(temp.data + " ");
+            temp = temp.down;
         }
-
-        System.out.println("null");
+        System.out.println();
     }
 
-    // Recursive function to flatten and sort a given list
-    public static FlattenNode flatten(FlattenNode head)
+    /* Driver program to test above functions */
+    public static void main(String args[])
     {
-        // base case: an empty list
-        if (head == null) {
-            return head;
-        }
+        FlattenLinkedListNSort L = new FlattenLinkedListNSort();
 
-        // Merge this list with the list on right side
-        FlattenNode sorted = SortedMerge(head, flatten(head.next));
+        /* Let us create the following linked list
+            5 -> 10 -> 19 -> 28
+            |    |     |     |
+            V    V     V     V
+            7    20    22    35
+            |          |     |
+            V          V     V
+            8          50    40
+            |                |
+            V                V
+            30               45
+        */
 
-        // set next link to null after flattening
-        head.next = null;
+        L.head = L.push(L.head, 30);
+        L.head = L.push(L.head, 8);
+        L.head = L.push(L.head, 7);
+        L.head = L.push(L.head, 5);
 
-        return sorted;
-    }
+        L.head.right = L.push(L.head.right, 20);
+        L.head.right = L.push(L.head.right, 10);
 
-    // Helper function to create a linked list with elements of given vector
-    public static FlattenNode createVerticalList(FlattenNode head, int[] arr)
-    {
-        for (int key: arr) {
-            head = push(head, key);
-        }
-        return head;
-    }
+        L.head.right.right = L.push(L.head.right.right, 50);
+        L.head.right.right = L.push(L.head.right.right, 22);
+        L.head.right.right = L.push(L.head.right.right, 19);
 
-    public static void main(String[] args)
-    {
-        FlattenNode head = null;
+        L.head.right.right.right = L.push(L.head.right.right.right, 45);
+        L.head.right.right.right = L.push(L.head.right.right.right, 40);
+        L.head.right.right.right = L.push(L.head.right.right.right, 35);
+        L.head.right.right.right = L.push(L.head.right.right.right, 20);
 
-        int arr1[] = { 8, 6, 4, 1 };
-        int arr2[] = { 7, 3, 2 };
-        int arr3[] = { 9, 5 };
-        int arr4[] = { 12, 11, 10 };
+        // flatten the list
+        L.head = L.flatten(L.head);
 
-        head = createVerticalList(head, arr1);
-        head.next = createVerticalList(head.next, arr2);
-        head.next.next = createVerticalList(head.next.next, arr3);
-        head.next.next.next = createVerticalList(head.next.next.next, arr4);
-
-        // flatten and sort the list
-        flatten(head);
-
-        // print the flattened & sorted linked list
-        printList(head);
+        L.printList();
     }
 }
